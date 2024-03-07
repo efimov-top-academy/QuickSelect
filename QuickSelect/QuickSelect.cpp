@@ -18,21 +18,26 @@ int compare(int num1, int num2)
         return 0;
 }
 
-void swap(int* array, int position1, int position2) {
-    if (position1 != position2) {
+void swap(int* array, int position1, int position2) 
+{
+    if (position1 != position2) 
+    {
         int temp = array[position1];
         array[position1] = array[position2];
         array[position2] = temp;
     }
 }
 
-void partition(int* input, int begin, int end) {
+void partition(int* input, int begin, int end) 
+{
     int lt = begin, current = begin, gt = end;
-    int partitioningValue = 7; //input[begin];
+    int partitioningValue = input[begin];
 
-    while (current <= gt) {
+    while (current <= gt) 
+    {
         int compareCurrent = compare(input[current], partitioningValue);
-        switch (compareCurrent) {
+        switch (compareCurrent) 
+        {
         case -1:
             swap(input, current++, lt++);
             break;
@@ -44,73 +49,86 @@ void partition(int* input, int begin, int end) {
             break;
         }
     }
+
+    std::cout << "pivot = " << partitioningValue << "\n";
+    std::cout << "left = " << lt << "\n";
+    std::cout << "right = " << gt << "\n";
 }
 
+void partition2(int* input, int begin, int end)
+{
+    int left{ begin  };
+    int current{ begin };
+    int right{ end };
+
+    int pivot = input[begin];
+
+    while (current <= right)
+    {
+        if (input[current] < pivot)
+        {
+            std::swap(input[current], input[left]);
+            current++;
+            left++;
+        }
+        else if (input[current] > pivot)
+        {
+            std::swap(input[current], input[right]);
+            right--;
+        }
+        else
+            current++;
+    }
+
+    std::cout << "pivot = " << pivot << "\n";
+    std::cout << "left = " << left << "\n";
+    std::cout << "right = " << right << "\n";
+}
+
+void partition3(int* input, int begin, int end)
+{
+    int left{ begin };
+    int right{ end };
+    int pindex = rand() % (end - begin + 1);
+    int pivot = input[begin];
+
+    do {
+        while (input[left] < pivot) left++;
+        while (input[right] > pivot) right--;
+
+        if (left <= right)
+        {
+            int temp = input[left];
+            input[left] = input[right];
+            input[right] = temp;
+
+            left++;
+            right--;
+        }
+    } while (left <= right);
+
+    std::cout << "pivot = " << pivot << "\n";
+    std::cout << "left = " << left << "\n";
+    std::cout << "right = " << right << "\n";
+}
 
 int main()
 {
     srand(time(nullptr));
 
-    int size{ 11 };
-    //int* array = new int[size];
+    int size{ 19 };
+    int* array = new int[size];
 
-    int array[]{ 7, 9, 8, 2, 7, 5, 7, 2, 9, 3, 8 };
+    //int array[]{ 7, 9, 8, 2, 7, 5, 7, 2, 9, 3, 8 };
 
-    /*for (int i{}; i < size; i++)
-        array[i] = rand() % 10;*/
+    for (int i{}; i < size; i++)
+        array[i] = rand() % 10;
 
     ArrayPrint(array, size);
 
-    //partition(array, 0, 10);
+    partition(array, 0, size - 1);
 
-    int left{};
-    int current{};
-    int right{ size - 1 };
+    ArrayPrint(array, size);
+
     
-    int pivot = 7;
-
-    while (current <= right)
-    {
-        if (array[current] < pivot)
-        {
-            std::swap(array[current], array[left]);
-            current++;
-            left++;
-        }
-        else if (array[current] > pivot)
-        {
-            std::swap(array[current], array[right]);
-            right--;
-        }
-        else
-            current++;
-        ArrayPrint(array, size);
-    }
-
-    std::cout << "left = " << left << "\n";
-    std::cout << "right = " << right << "\n";
-
-    /*int left{};
-    int right{ size - 1 };
-    int pindex = rand() % size;
-    int pivot = array[pindex];
-
-    do {
-        while (array[left] < pivot) left++;
-        while (array[right] > pivot) right--;
-        
-        int temp = array[left];
-        array[left] = array[right];
-        array[right] = temp;
-
-        left++;
-        right--;
-    } while (left < right);
-
-    std::cout << "pindex = " << pindex << "\n";
-    std::cout << "pivot = " << pivot << "\n";
-    std::cout << "left = " << left << "\n";
-    std::cout << "right = " << right << "\n";*/
-
-    ArrayPrint(array, size);
 }
