@@ -28,52 +28,57 @@ void swap(int* array, int position1, int position2)
     }
 }
 
-void partition(int* input, int begin, int end) 
+void partition(int* array, int begin, int end, int index)
 {
-    int lt = begin, current = begin, gt = end;
-    int partitioningValue = input[begin];
+    int left{ begin };
+    int current{ begin };
+    int right{ end };
+    int pivot{ array[index] };
 
-    while (current <= gt) 
+    swap(array, begin, index);
+
+    while (current <= right) 
     {
-        int compareCurrent = compare(input[current], partitioningValue);
+        int compareCurrent = compare(array[current], pivot);
         switch (compareCurrent) 
         {
         case -1:
-            swap(input, current++, lt++);
+            swap(array, current++, left++);
             break;
         case 0:
             current++;
             break;
         case 1:
-            swap(input, current, gt--);
+            swap(array, current, right--);
             break;
         }
     }
 
-    std::cout << "pivot = " << partitioningValue << "\n";
-    std::cout << "left = " << lt << "\n";
-    std::cout << "right = " << gt << "\n";
+    std::cout << "pivot = " << pivot << "\n";
+    std::cout << "left = " << left << "\n";
+    std::cout << "right = " << right << "\n";
 }
 
-void partition2(int* input, int begin, int end)
+void partition2(int* array, int begin, int end, int index)
 {
     int left{ begin  };
     int current{ begin };
     int right{ end };
 
-    int pivot = input[begin];
+    int pivot{ array[index] };
+    std::swap(array[begin], array[index]);
 
     while (current <= right)
     {
-        if (input[current] < pivot)
+        if (array[current] < pivot)
         {
-            std::swap(input[current], input[left]);
+            std::swap(array[current], array[left]);
             current++;
             left++;
         }
-        else if (input[current] > pivot)
+        else if (array[current] > pivot)
         {
-            std::swap(input[current], input[right]);
+            std::swap(array[current], array[right]);
             right--;
         }
         else
@@ -85,23 +90,19 @@ void partition2(int* input, int begin, int end)
     std::cout << "right = " << right << "\n";
 }
 
-void partition3(int* input, int begin, int end)
+void partition3(int* array, int begin, int end, int index)
 {
     int left{ begin };
     int right{ end };
-    int pindex = rand() % (end - begin + 1);
-    int pivot = input[begin];
+    int pivot{ array[index] };
 
     do {
-        while (input[left] < pivot) left++;
-        while (input[right] > pivot) right--;
+        while (array[left] < pivot) left++;
+        while (array[right] > pivot) right--;
 
         if (left <= right)
         {
-            int temp = input[left];
-            input[left] = input[right];
-            input[right] = temp;
-
+            std::swap(array[left], array[right]);
             left++;
             right--;
         }
@@ -112,23 +113,44 @@ void partition3(int* input, int begin, int end)
     std::cout << "right = " << right << "\n";
 }
 
+int quick_select(int* array, int begin, int end, int index)
+{
+    if (begin == end) return array[begin];
+
+    
+}
+
 int main()
 {
     srand(time(nullptr));
 
-    int size{ 19 };
+    int size{ 20 };
     int* array = new int[size];
+    int* array2 = new int[size];
+    int* array3 = new int[size];
 
-    //int array[]{ 7, 9, 8, 2, 7, 5, 7, 2, 9, 3, 8 };
+    /*int array[]{ 7, 9, 8, 2, 7, 5, 7, 2, 9, 3, 8 };
+    int array2[]{ 7, 9, 8, 2, 7, 5, 7, 2, 9, 3, 8 };
+    int array3[]{ 7, 9, 8, 2, 7, 5, 7, 2, 9, 3, 8 };*/
 
     for (int i{}; i < size; i++)
-        array[i] = rand() % 10;
+    {
+        int item = rand() % 10;
+        array[i] = item;
+        array2[i] = item;
+        array3[i] = item;
+    }
+        
 
     ArrayPrint(array, size);
 
-    partition(array, 0, size - 1);
-
+    int pivot = 0 + rand() % size;
+    partition(array, 0, size - 1, pivot);
     ArrayPrint(array, size);
 
-    
+    partition2(array2, 0, size - 1, pivot);
+    ArrayPrint(array2, size);
+
+    partition3(array3, 0, size - 1, pivot);
+    ArrayPrint(array3, size);
 }
