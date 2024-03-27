@@ -1,5 +1,14 @@
 ﻿#include <iostream>
 
+int size{ 20 };
+
+template <typename T>
+struct Tuple
+{
+    T first;
+    T second;
+};
+
 void ArrayPrint(int* array, int size)
 {
     for (int i{}; i < size; i++)
@@ -28,7 +37,7 @@ void swap(int* array, int position1, int position2)
     }
 }
 
-void partition(int* array, int begin, int end, int index)
+Tuple<int> partition(int* array, int begin, int end, int index)
 {
     int left{ begin };
     int current{ begin };
@@ -57,9 +66,11 @@ void partition(int* array, int begin, int end, int index)
     std::cout << "pivot = " << pivot << "\n";
     std::cout << "left = " << left << "\n";
     std::cout << "right = " << right << "\n";
+
+    return Tuple<int>{ left, right };
 }
 
-void partition2(int* array, int begin, int end, int index)
+Tuple<int> partition2(int* array, int begin, int end, int index)
 {
     int left{ begin  };
     int current{ begin };
@@ -71,16 +82,18 @@ void partition2(int* array, int begin, int end, int index)
     while (current <= right)
     {
         if (array[current] < pivot)
-        {
+            std::swap(array[current++], array[left++]);
+        /*{
             std::swap(array[current], array[left]);
             current++;
             left++;
-        }
+        }*/
         else if (array[current] > pivot)
-        {
+            std::swap(array[current], array[right--]);
+        /*{
             std::swap(array[current], array[right]);
             right--;
-        }
+        }*/
         else
             current++;
     }
@@ -88,6 +101,9 @@ void partition2(int* array, int begin, int end, int index)
     std::cout << "pivot = " << pivot << "\n";
     std::cout << "left = " << left << "\n";
     std::cout << "right = " << right << "\n";
+
+    return Tuple<int>{ left, right };
+
 }
 
 void partition3(int* array, int begin, int end, int index)
@@ -117,14 +133,32 @@ int quick_select(int* array, int begin, int end, int index)
 {
     if (begin == end) return array[begin];
 
-    
+    int pivot = begin + rand() % (end - begin + 1);
+    auto range = partition(array, begin, end, pivot);
+    ArrayPrint(array, size);
+
+    if (index >= range.first && index <= range.second)
+        return array[index];
+    if (index < range.first)
+        return quick_select(array, begin, range.first - 1, index);
+    if (index > range.second)
+        return quick_select(array, range.second + 1, end, index);
 }
+
+void sort_bubble(int* array, int size)
+{
+    for (int i{}; i < size; i++)
+        for (int j{ size - 1 }; j > i; j--)
+            if (array[j] < array[j - 1])
+                std::swap(array[j], array[j - 1]);
+}
+
 
 int main()
 {
     srand(time(nullptr));
 
-    int size{ 20 };
+    
     int* array = new int[size];
     int* array2 = new int[size];
     int* array3 = new int[size];
@@ -135,7 +169,7 @@ int main()
 
     for (int i{}; i < size; i++)
     {
-        int item = rand() % 10;
+        int item = rand() % 20;
         array[i] = item;
         array2[i] = item;
         array3[i] = item;
@@ -144,13 +178,22 @@ int main()
 
     ArrayPrint(array, size);
 
-    int pivot = 0 + rand() % size;
+    /*int pivot = 0 + rand() % size;
     partition(array, 0, size - 1, pivot);
     ArrayPrint(array, size);
 
     partition2(array2, 0, size - 1, pivot);
-    ArrayPrint(array2, size);
+    ArrayPrint(array2, size);*/
 
-    partition3(array3, 0, size - 1, pivot);
+    /*partition3(array3, 0, size - 1, pivot);
+    ArrayPrint(array3, size);*/
+
+    int result = quick_select(array, 0, size - 1, size / 2);
+    std::cout << "middle = " << result << "\n";
+    ArrayPrint(array, size);
+
+    std::cout << "----------\n";
+    sort_bubble(array3, size);
     ArrayPrint(array3, size);
+    std::cout << "middle = " << array3[size / 2] << "\n";
 }
